@@ -11,14 +11,21 @@ const thoughtSchema = new Schema(
         username: {
 
         },
-        reactions: {
-
-        },
+        reactions: [{
+            type: Schema.Types.ObjectId,
+            ref: 'reaction',
+        }],
     },
     {
         toJSON: {
             virtuals: true,
-            },
-            id: false,
+        },
+        id: false,
     },
 );
+
+thoughtSchema.virtual('reaction').get(function () {
+    return this.reactions.length;
+});
+
+const Thought = model('thought', thoughtSchema);

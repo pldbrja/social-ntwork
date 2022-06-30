@@ -14,5 +14,11 @@ const reactionSchema = new Schema(
         createdAt: {
 
         },
-    }
+    },
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
+    },
 );

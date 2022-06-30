@@ -16,13 +16,17 @@ const userSchema = new Schema(
             validate: [validator, 'We need a real email, try again?'],
             match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Real email, please!']
         },
-        thoughts: [Thought],
-        friends: [User],
+        thoughts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'thought',
+        }],
+        friends: [friendList],
     },
     {
         toJSON: {
             virtuals: true,
-            },
-            id: false,
+        },
+        id: false,
     },
 );
+
