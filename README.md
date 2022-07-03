@@ -9,3 +9,9 @@ This is a back-end application the runs off of MongoDB and Express.js. All CRUD 
 `npm i`
 
 `npm start`
+
+This API requires Insomnia to perform the CRUD operations. There is no front-end support.
+
+## Documentation
+
+TBA
