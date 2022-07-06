@@ -16,4 +16,10 @@ module.exports = {
     deleteUser(req, res) {
 
     },
+    addFriend(req, res) {
+
+    },
+    deleteFriend(req, res) {
+        
+    },
 };

@@ -16,4 +16,10 @@ module.exports = {
     deleteThought(req, res) {
 
     },
+    createReaction(req, res) {
+
+    },
+    deleteReaction(req, res) {
+
+    },
 };
