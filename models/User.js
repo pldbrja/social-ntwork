@@ -1,4 +1,4 @@
-const { Schema, Types } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const validator = require('../utils/emTest')
 
 const userSchema = new Schema(
@@ -20,7 +20,10 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'thought',
         }],
-        friends: [friendList],
+        friends: [{
+            type: Schema.Types.ObjectId,
+            ref: 'user',
+        }],
     },
     {
         toJSON: {
