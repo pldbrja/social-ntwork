@@ -3,9 +3,7 @@ const { User, Thought } = require('../models');
 module.exports = {
     getUsers(req, res) {
         User.find()
-            .then(async (users) => {
-
-            })
+            .then((users) => res.json(users))
             .catch((err) => {
                 console.log(err);
                 return res.status(500).json(err);
@@ -14,7 +12,7 @@ module.exports = {
     getUser(req, res) {
         User.findOne({ _id: req.params.userId })
             .select('-__v')
-            .then(async (student) => {
+            .then (async (student) => {
 
             })
             .catch((err) => {
@@ -23,7 +21,12 @@ module.exports = {
             });
     },
     createUser(req, res) {
-        User.create();
+        User.create(req.body)
+            .then ((user) => res.json(user))
+            .catch ((err) => {
+                console.log(err);
+                return res.status(500).json(err);
+            });
     },
     updateUser(req, res) {
         User.findOneAndUpdate();
