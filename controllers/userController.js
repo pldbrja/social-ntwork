@@ -39,7 +39,7 @@ module.exports = {
             });
     },
     deleteUser(req, res) {
-        User.findOneandRemove({ _id: req.params.courseId })
+        User.findOneAndDelete({ _id: req.params.courseId })
             .then((user) =>
                     !user
                         ? res
@@ -63,7 +63,7 @@ module.exports = {
             });
     },
     deleteFriend(req, res) {
-        User.findOneandUpdate(
+        User.findOneAndUpdate(
             { _id: req.params.thoughtId},
             { $addToSet: { reactions: body } },
             { runValidators: true, new: true }

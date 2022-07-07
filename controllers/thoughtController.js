@@ -42,7 +42,7 @@ module.exports = {
         });
     },
     updateThought(req, res) {
-        Thought.findOneandUpdate(
+        Thought.findOneAndUpdate(
             { _id: req.params.courseId },
             { $set: req.body },
             { runValidators: true, new: true }
@@ -60,7 +60,7 @@ module.exports = {
             });
     },
     deleteThought(req, res) {
-        Thought.findOneandDelete({ _id: req.params.thoughtId })
+        Thought.findOneAndDelete({ _id: req.params.thoughtId })
             .then((thought) =>
                 !thought
                     ? res
@@ -84,7 +84,7 @@ module.exports = {
             });
     },
     createReaction(req, res) {
-        Thought.findOneandUpdate(
+        Thought.findOneAndUpdate(
             { _id: req.params.thoughtId},
             { $addToSet: { reactions: body } },
             { runValidators: true, new: true }
@@ -102,7 +102,7 @@ module.exports = {
         
     },
     deleteReaction(req, res) {
-        Thought.findOneandUpdate(
+        Thought.findOneAndUpdate(
             { _id: req.params.thoughtId},
             { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
