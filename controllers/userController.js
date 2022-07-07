@@ -39,7 +39,18 @@ module.exports = {
             });
     },
     deleteUser(req, res) {
-        User.findOneandRemove({ _id: req.params.courseId });
+        User.findOneandRemove({ _id: req.params.courseId })
+            .then((user) =>
+                    !user
+                        ? res
+                            .status(404)
+                            .json({ message: 'No thought exists at this ID.' })
+                        : res
+                            .json({ message: "User successfully deleted, we'll miss you!" })
+            )        
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
     addFriend(req, res) {
         User.findOneAndUpdate(
