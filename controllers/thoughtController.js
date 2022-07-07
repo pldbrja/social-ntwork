@@ -9,7 +9,7 @@ module.exports = {
             });
     },
     getThought(req, res) {
-        Thought.findOne({ _id: req.params.userId })
+        Thought.findOne({ _id: req.params.thoughtId })
             .select('-__v')
             .then((thought) => 
                 !thought
@@ -45,18 +45,28 @@ module.exports = {
         Thought.findOneandUpdate({ _id: req.params.thoughtId });
     },
     deleteThought(req, res) {
-        Thought.findOneandRemove({ _id: req.params.thoughtId })
+        Thought.findOneandDelete({ _id: req.params.thoughtId })
             .then((thought) =>
                 !thought
                     ? res
                         .status(404)
-                        .json({ message: '' })
+                        .json({ message: 'No thought exists at this ID.' })
                     : User.findOneAndUpdate(
                         { thoughts: req.params.thoughtId },
                         { $pull: { thoughts: req.params.thoughtId } },
                         { new: true }
                     )
             )
+            .then((user) => 
+                !user
+                    ? res
+                        .status(404)
+                        .json({ message: 'Whose thought does this belong to?' })
+                        : res.json({ message: 'This thought has been deleted.' })
+            )
+            .catch((err) => {
+                res.status(500).json(err);
+            })
     },
     createReaction(req, res) {
         Thought.findOneandUpdate(

@@ -34,7 +34,7 @@ module.exports = {
         User.findOneAndUpdate();
     },
     deleteUser(req, res) {
-        User.findOneAndDelete();
+        User.findOneandRemove();
     },
     addFriend(req, res) {
         User.findOneAndUpdate();
