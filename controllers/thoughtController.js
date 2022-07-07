@@ -42,7 +42,22 @@ module.exports = {
         });
     },
     updateThought(req, res) {
-        Thought.findOneandUpdate({ _id: req.params.thoughtId });
+        Thought.findOneandUpdate(
+            { _id: req.params.courseId },
+            { $set: req.body },
+            { runValidators: true, new: true }
+        )
+            .then((thought) => 
+                !thought
+                    ? res
+                        .status(404)
+                        .json({ message: 'No thought exists with this ID.' })
+                    : res
+                        .json('Your thought has been updated!')
+            )
+            .catch((err) => {
+                return res.status(500).json(err);
+            });
     },
     deleteThought(req, res) {
         Thought.findOneandDelete({ _id: req.params.thoughtId })
@@ -66,7 +81,7 @@ module.exports = {
             )
             .catch((err) => {
                 res.status(500).json(err);
-            })
+            });
     },
     createReaction(req, res) {
         Thought.findOneandUpdate(
@@ -81,6 +96,9 @@ module.exports = {
                         .json({ message: 'Something went wrong! 😱' })
                     : res.json(thought)
             )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
         
     },
     deleteReaction(req, res) {
@@ -96,5 +114,8 @@ module.exports = {
                     .json({ message: 'Something went wrong! 😱' })
                 : res.json(thought)
             )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
 };

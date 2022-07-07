@@ -5,7 +5,6 @@ module.exports = {
         User.find()
             .then((users) => res.json(users))
             .catch((err) => {
-                console.log(err);
                 return res.status(500).json(err);
             });
     },
@@ -18,7 +17,6 @@ module.exports = {
                     : res.json(user)
             )
             .catch((err) => {
-                console.log(err);
                 return res.status(500).json(err);
             });
     },
@@ -31,15 +29,43 @@ module.exports = {
             });
     },
     updateUser(req, res) {
-        User.findOneAndUpdate();
+        User.findOneAndUpdate(
+            { _id: req.params.courseId },
+            { $set: req.body },
+            { runValidators: true, new: true }
+        )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
     deleteUser(req, res) {
-        User.findOneandRemove();
+        User.findOneandRemove({ _id: req.params.courseId });
     },
     addFriend(req, res) {
-        User.findOneAndUpdate();
+        User.findOneAndUpdate(
+            { _id: req.params.thoughtId},
+            { $addToSet: { reactions: body } },
+            { runValidators: true, new: true }
+        )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
     deleteFriend(req, res) {
-        User.findOneandUpdate();
+        User.findOneandUpdate(
+            { _id: req.params.thoughtId},
+            { $addToSet: { reactions: body } },
+            { runValidators: true, new: true }
+        )
+            .then ((user) =>
+                !user
+                    ? res
+                        .status(404)
+                        .json({ message: 'Something went wrong! 😱' })
+                    : res.json(user)
+            )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
 };
