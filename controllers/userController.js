@@ -11,7 +11,7 @@ module.exports = {
     getUser(req, res) {
         User.findOne({ _id: req.params.userId })
             .select('-__v')
-            .populate('thoughts')
+            .populate('thoughts friends')
             .then((user) => 
                 !user
                     ? res.status(404).json({ message: 'No user exists at this ID.'})
@@ -35,6 +35,7 @@ module.exports = {
             { $set: req.body },
             { runValidators: true, new: true }
         )
+            .then ((user) => res.json(user))
             .catch((err) => {
                 res.status(500).json(err);
             });
@@ -56,17 +57,7 @@ module.exports = {
     addFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId},
-            { $addToSet: { reactions: body } },
-            { runValidators: true, new: true }
-        )
-            .catch((err) => {
-                res.status(500).json(err);
-            });
-    },
-    deleteFriend(req, res) {
-        User.findOneAndUpdate(
-            { _id: req.params.userId},
-            { $addToSet: { reactions: body } },
+            { $addToSet: { friends: req.body.friendId } },
             { runValidators: true, new: true }
         )
             .then ((user) =>
@@ -74,7 +65,24 @@ module.exports = {
                     ? res
                         .status(404)
                         .json({ message: 'Something went wrong! 😱' })
-                    : res.json(user)
+                    : res.json({ message: 'Say hello to your new friend!' })
+            )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
+    },
+    deleteFriend(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.params.userId},
+            { $pull: { friends: req.params.friendId } },
+            { runValidators: true, new: true }
+        )
+            .then ((user) =>
+                !user
+                    ? res
+                        .status(404)
+                        .json({ message: 'Something went wrong! 😱' })
+                    : res.json({ message: 'Your friend has been deleted.' })
             )
             .catch((err) => {
                 res.status(500).json(err);
