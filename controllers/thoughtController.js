@@ -5,12 +5,13 @@ module.exports = {
         Thought.find()
             .then((thoughts) => res.json(thoughts))
             .catch((err) => {
-                return res.status(500).json(err);
+                res.status(500).json(err);
             });
     },
     getThought(req, res) {
         Thought.findOne({ _id: req.params.thoughtId })
             .select('-__v')
+            .populate('reactions')
             .then((thought) => 
                 !thought
                     ? res
@@ -20,30 +21,33 @@ module.exports = {
                         .json(thought)
             )
             .catch((err) => {
-                return res.status(500).json(err);
+                res.status(500).json(err);
             });
     },
     createThought(req, res) {
         Thought.create(req.body)
             .then ((thought) => {
                 return User.findOneAndUpdate(
-                    { _id: req.body.thoughtId },
+                    { _id: req.body.userId },
                     { $addToSet: { thoughts: thought._id } },
                     { new: true }
                 );
             })
-            .catch ((thought) => {
-                !thought
+            .then((user) => 
+                !user
                     ? res
                         .status(404)
-                        .json({ message: 'Please try again, something has gone wrong with the submission.' })
+                        .json({ message: 'Your thought is out there, but with who?' })
                     : res
-                        .json('Your thoughts are out there.')
-        });
+                        .json('Your thought is out there.')
+            )
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     },
     updateThought(req, res) {
         Thought.findOneAndUpdate(
-            { _id: req.params.courseId },
+            { _id: req.params.thoughtId },
             { $set: req.body },
             { runValidators: true, new: true }
         )
@@ -76,8 +80,8 @@ module.exports = {
                 !user
                     ? res
                         .status(404)
-                        .json({ message: 'Whose thought does this belong to?' })
-                        : res.json({ message: 'This thought has been deleted.' })
+                        .json({ message: 'Who thought does this belong to?' })
+                    : res.json({ message: 'This thought has been deleted.' })
             )
             .catch((err) => {
                 res.status(500).json(err);
@@ -86,7 +90,7 @@ module.exports = {
     createReaction(req, res) {
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId},
-            { $addToSet: { reactions: body } },
+            { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
         )
             .then ((thought) =>
@@ -104,7 +108,7 @@ module.exports = {
     deleteReaction(req, res) {
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId},
-            { $addToSet: { reactions: req.body } },
+            { $addToSet: { reactions: { reactionId: req.params.reactionId} } },
             { runValidators: true, new: true }
         )
             .then ((thought) =>
